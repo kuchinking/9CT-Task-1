@@ -30,7 +30,7 @@ The purpose of my project is to investigate the effect of oil prices on inflatio
 Increases in oil prices do generally cause inflation in Australia to rise, and vice versa. As fuel gets more expensive, specifically motor fuel, transportation of goods rises, increasing the price of everything and subsequently rising inflation. For example in the 1970's conflicts in the middle east halted production and export of fuel, impacting the whole world. Australia's inflation rate saw highs of 15+% annually.
 
 ### My data
-For the oil prices I will use WTI 
+For the oil prices I will use WTI oil shares
 
 For the inflation rate I will use two sources, from the Australian Beuro of Statistics: 
 1. https://www.abs.gov.au/statistics/research/70-years-inflation-australia - This source shows the annual inflation rate per quarter for 70 years.
