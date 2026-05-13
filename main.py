@@ -84,7 +84,7 @@ Oil Prices vs Inflation - {menu}      Currently viewing: placeholder
 =============================================================================================================
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣶⣿⣿⣶⡆⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠶⠶⢾⣿⣿⣿⣿⣧⣄⣀⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀    {menu} - Select an option, or look at the data:
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠶⠶⢾⣿⣿⣿⣿⣧⣄⣀⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀    {menu} - {menu_description}
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣿⣿⡿⠛⠉⢙⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀    
 ⠀⠀⠀⠀⣠⣴⣶⣶⣶⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣾⣿⣶⣾⣿⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀        (1) {selector1}
 ⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀        (2) {selector2}
@@ -126,6 +126,7 @@ while not quit:
         if user_input == "1":
             valid = True
             menu = "Datasets Viewer"
+            menu_description = "Select an option, or look at the data:"
         elif user_input == "2":
             valid = True
             menu = "Datasets Viewer"
@@ -146,10 +147,11 @@ while not quit:
         if user_input == "1":
             valid = True
             menu = "Datasets Selection"
+            menu_description = "Select an option:"
             previous_UI = "Datasets Viewer"
-            selector1 = "View entire dataset"
-            selector2 = "View oil prices dataset (WTI)"
-            selector3 = "View Australian fuel price dataset"
+            selector1 = "view entire dataset"
+            selector2 = "view oil prices dataset (WTI)"
+            selector3 = "view Australian fuel price dataset"
         else:
             valid = False
     elif menu == "Datasets Selection":
