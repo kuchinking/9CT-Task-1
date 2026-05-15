@@ -7,30 +7,30 @@ import matplotlib as mpl
 import pandas as pd
 
 quit = False
-menu = "Main Menu"
+menu = "Introduction"
 valid = True
+
 
 menus = {
     "Main Menu": {
         "header_description": "",
         "description": "Select an option:",
-        "1": ["(1) View data", "Datasets Viewer"],
-        "2": ["(2) View visualisations", "Visualisation Viewer"],
-        "3": ["(3) Update data", "Data Updater"],
-        "4": ["(4) Quit program", ""],
-        "5": ["", ""],
+        "1": "View data",
+        "2": "View visualisations",
+        "3": "Update data",
+        "4": "Quit program",
+        "5": "",
     },
     "Datasets Viewer": {
         "header_description": "",
         "description": "Select an option, or look at the data:",
         "1": ["(1) Select dataset", "Datasets Selector"],
-        "2": ["(2) View by date, quarter or year", "Datasets Selector - Time"],
-        "3": ["(3) View a time period", "Datasets Selector - Time Period"],
-        "4": ["(4) Go back to Main Menu", "Main Menu"],
-        "5": ["", ""],
+        "2": "(2) View by date, quarter or year",
+        "3": "(3) View a time period",
+        "4": "(4) Go back to Main Menu",
+        "5": "",
     },
     "Datasets Selector": {
-        "header_description": "",
         "description": "Select an option:",
         "1": "(1) View entire dataset",
         "2": "(2) View oil prices dataset (WTI)",
@@ -39,7 +39,6 @@ menus = {
         "5": "(5) Go back to Datasets Viewer",
     },
     "Datasets Selector - Time": {
-        "header_description": "",
         "description": "Select an option:",
         "1": "(1) View specific year",
         "2": "(2) View by quarter",
@@ -48,7 +47,6 @@ menus = {
         "5": "",
     },
     "Datasets Selector - Time Period": {
-        "header_description": "",
         "description": "",
         "1": "(1) View specific year",
         "2": "Enter the year",
@@ -62,31 +60,22 @@ menus = {
 def selector():
     global menus
     global menu
-    global valid
-    user_input = ""
-
-    if menus[menu]["5"][0] == "":
+    if {menus[menu]["5"][0]} == "":
         if valid:
             user_input = input("Enter your selection (1-4): ")
         else:
             user_input = input("Invalid option! Enter your selection (1-4): ")
-        valid = False if user_input not in ["1", "2", "3", "4"] else True
-
     else:
         if valid:
             user_input = input("Enter your selection (1-5): ")
         else:
             user_input = input("Invalid option! Enter your selection (1-5): ")
-        valid = False if user_input not in ["1", "2", "3", "4", "5"] else True
-
-    if valid:
-        if menus[menu][user_input][1] == "":
-            67
-        else:
-            menu = menus[menu][user_input][1]
 
 
-input("""
+def user_UI():  # I recommend collapsing this"5": "",
+    global menu
+    if menu == "Introduction":
+        user_UI = f"""
 =============================================================================================================
 Oil Prices vs Inflation - Introduction
 =============================================================================================================
@@ -115,12 +104,40 @@ Oil Prices vs Inflation - Introduction
 ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
 ⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠃
 =============================================================================================================
-
-Begin (enter anything)? """)
-
-
-while not quit:
-    print(f"""
+"""  # noqa: F541
+    elif menu == "Main Menu":
+        user_UI = f"""
+=============================================================================================================
+Oil Prices vs Inflation - Main Menu
+=============================================================================================================
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣶⣿⣿⣶⡆⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠶⠶⢾⣿⣿⣿⣿⣧⣄⣀⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀    Main Menu - Select an option:
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣿⣿⡿⠛⠉⢙⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀    
+⠀⠀⠀⠀⣠⣴⣶⣶⣶⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣾⣿⣶⣾⣿⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀        (1) View datasets
+⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀        (2) View visualisations
+⠀⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⣠⣴⣿⣿⡿⣿⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀        (3) Update data
+⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣦⣤⣴⣶⣿⣿⠿⠛⠁⠀⠘⣿⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀        (4) Quit program
+⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣮⣭⣽⡶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀        
+⠀⠀⢸⣿⣿⣿⣿⣿⣿⠋⠀⠈⠉⠛⠛⠿⠿⣿⣿⣇⣿⣿⣿⢿⣿⣿⣿⣟⣛⣯⣤⣤⣀⣀⡀⠀⠀⠀⠀⠀        
+⠀⠀⠘⣿⣿⣿⣿⡿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⢻⣿⣿⡿⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣤⡀
+⠀⠀⠀⠹⣿⣿⠟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣾⣿⣿⣇⡄⠀⠀⠀⠉⠉⠛⠻⣿⣿⣿⣿⣿⣿⣿⣿⡇    
+⠀⠀⠀⠀⢸⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇⣿⣿⣿⢻⣧⠀⠀⠀⠀⠀⠀⠀⣿⣿⠀⠈⠉⠉⠛⠉⠀    
+⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣇⠙⠛⠋⢸⣿⡆⠀⠀⠀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⠉⢳⣤⡞⠉⢻⣷⠀⠀⠀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⠀⠀    
+⠀⠀⠀⠀⢸⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣇⠴⠋⠀⠙⠲⣜⣿⡆⠀⠀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⠀⠀    To move through the UI write the corresponding
+⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⣷⡒⠒⠒⠒⠒⣺⢿⣿⠀⠀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⠀⠀    number to your selected option into the input area.
+⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⡇⠀⠉⣳⣤⣖⠋⠁⠘⣿⡇⠀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⠀⠀    
+⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⣠⠴⠊⠁⠀⠈⠙⠲⢤⣻⣿⡀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⢠⣿⠿⠿⣍⣉⠉⠉⠉⢉⣩⡿⠟⣿⣇⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⠀⠀    
+⠀⠀⠀⠀⢸⣧⠀⠀⠀⠀⠀⠀⠀⣼⡿⠀⠀⠀⣉⣿⠶⢾⣍⡀⠀⠀⢹⣿⡀⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀
+⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⢰⣿⣧⡤⠖⠛⠉⠀⠀⠀⠈⠙⠳⢦⣬⣿⣷⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
+⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠃
+=============================================================================================================
+"""  # noqa: F541
+    elif menu == "Datasets Viewer" or menu == "Datasets Selection":
+        user_UI = f"""
 =============================================================================================================
 Oil Prices vs Inflation - {menu}      {menus[menu]["header_description"]}
 =============================================================================================================
@@ -129,10 +146,10 @@ Oil Prices vs Inflation - {menu}      {menus[menu]["header_description"]}
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠶⠶⢾⣿⣿⣿⣿⣧⣄⣀⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀    {menu} - {menus[menu]["description"]}
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣿⣿⡿⠛⠉⢙⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀    
 ⠀⠀⠀⠀⣠⣴⣶⣶⣶⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣾⣿⣶⣾⣿⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀        {menus[menu]["1"][0]}
-⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀        {menus[menu]["2"][0]}
-⠀⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⣠⣴⣿⣿⡿⣿⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀        {menus[menu]["3"][0]}
-⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣦⣤⣴⣶⣿⣿⠿⠛⠁⠀⠘⣿⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀        {menus[menu]["4"][0]}
-⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣮⣭⣽⡶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀        {menus[menu]["5"][0]}
+⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀        {menus[menu]["2"]}
+⠀⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⣠⣴⣿⣿⡿⣿⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀        {menus[menu]["3"]}
+⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣦⣤⣴⣶⣿⣿⠿⠛⠁⠀⠘⣿⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀        {menus[menu]["4"]}
+⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣮⣭⣽⡶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀        {menus[menu]["5"]}
 ⠀⠀⢸⣿⣿⣿⣿⣿⣿⠋⠀⠈⠉⠛⠛⠿⠿⣿⣿⣇⣿⣿⣿⢿⣿⣿⣿⣟⣛⣯⣤⣤⣀⣀⡀⠀⠀⠀⠀⠀        
 ⠀⠀⠘⣿⣿⣿⣿⡿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⢻⣿⣿⡿⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣤⡀
 ⠀⠀⠀⠹⣿⣿⠟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣾⣿⣿⣇⡄⠀⠀⠀⠉⠉⠛⠻⣿⣿⣿⣿⣿⣿⣿⣿⡇    To move through the UI write the corresponding
@@ -149,8 +166,56 @@ Oil Prices vs Inflation - {menu}      {menus[menu]["header_description"]}
 ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
 ⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠃
 =============================================================================================================
-""")
-    selector()
+"""
+    return user_UI
+
+
+while not quit:
+    print(user_UI())
+
+    if menu == "Introduction":
+        user_input = input("Begin (enter anything)? ")
+        menu = "Main Menu"
+
+    elif menu == "Main Menu":
+        if valid:
+            user_input = input("Enter your selection (1-4): ")
+        else:
+            user_input = input("Invalid option! Enter your selection (1-4): ")
+
+        if user_input == "1":
+            valid = True
+            menu = "Datasets Viewer"
+        elif user_input == "2":
+            valid = True
+            menu = "Visualisations Viewer"
+        elif user_input == "3":
+            valid = True
+            menu = "Data Editor"
+        elif user_input == "4":
+            quit = True
+        else:
+            valid = False
+
+    elif menu == "Datasets Viewer":
+        if valid:
+            user_input = input("Enter your selection (1-4): ")
+        else:
+            user_input = input("Invalid option! Enter your selection (1-4): ")
+
+        if user_input == "1":
+            valid = True
+            menu = "Datasets Selection"
+        elif user_input == "2":
+            valid = True
+            menu = "Datasets Selector - Time"
+        elif user_input == "2":
+            valid = True
+            menu = "Datasets Selector - Time"
+        else:
+            valid = False
+    elif menu == "Datasets Selection":
+        input()
 
 
 print("Quit successfully!")
