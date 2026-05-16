@@ -37,3 +37,10 @@ For the inflation rate I will use two sources, from the Australian Beuro of Stat
 1. https://www.abs.gov.au/statistics/research/70-years-inflation-australia - This source shows the annual inflation rate per quarter for 70 years.
 2. 
 
+## Data Dictionary:
+|Field |Datatype| Format for display |Description |Example |Validation|
+|------|--------|--------------------|------------|--------|----------|
+|Date  |datetime64|placeholder|The quarter the data represents.                                     |placeholder (march 2026)|
+|Fuel  |float64   |N.NN  |The quartely change as a percentage in Australian automotive fuel price.  |5.2                     | Must be a number with up to 1 decimal places.
+|Inflation|float64|N.NN  |Tge quartely change as a percentage in Australian CPI.                    |1.4                     |Must be a number with up to 1 decimal places.
+
