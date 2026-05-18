@@ -1,7 +1,13 @@
 # Code for UI
 # Michael K
 
-from data_module import placeholder
+from data_module import (
+    display_data,
+    time_viewer,
+    viewing_description,
+    display_full_dataset,
+)
+
 import matplotlib as mpl
 import pandas as pd
 
@@ -12,61 +18,42 @@ one = 1
 data_module_output = ""
 
 
-def dataset():
-    global one
-    one += 1
-    return f"{one}"
+def non():
+    "bimbimbapbap"
+    return ""
 
 
 menus = {
     "Main Menu": {
-        "header_description": "",
-        "description": "Select an option:",
+        "additional_description": non,
+        "description": ["Select an option:", non],
         "1": ["(1) View data", "Datasets Viewer"],
         "2": ["(2) View visualisations", "Visualisations Viewer"],
         "3": ["(3) Update data", "Data Editor"],
-        "4": ["(4) Quit program", "Quit"],
-        "5": ["", ""],
+        "4": ["(4) Calculate data", "Data Calculator"],
+        "5": ["(5) Quit program", "Quit"],
     },
     "Datasets Viewer": {
-        "header_description": "",
-        "description": "Select an option, or look at the data:",
-        "1": ["(1) Select dataset", "Datasets Selector"],
-        "2": ["(2) View by date, quarter or year", "Datasets Selector - Time"],
-        "3": ["(3) View a time period", "Datasets Selector - Time Period"],
-        "4": ["(4) Go back to Main Menu", "Main Menu"],
-        "5": ["", ""],
+        "additional_description": viewing_description,
+        "description": ["Select an option:", display_data],
+        "1": ["(1) View by year", "", time_viewer],
+        "2": ["(2) View a time period", "Datasets Lookup"],
+        "3": ["(2) View specific quarter or year", "Dataset Lookup"],
+        "4": ["(4) View FULL dataset", "", display_full_dataset],
+        "5": ["(5) Go back to Main Menu", "Main Menu"],
     },
-    "Datasets Selector": {
-        "header_description": "",
-        "description": "Select an option:",
-        "1": ["(1) View entire dataset", "", placeholder],
-        "2": ["(2) View oil prices dataset (WTI)", ""],
-        "3": ["(3) View Australian fuel price dataset", ""],
-        "4": ["(4) View Australian inflation dataset", ""],
-        "5": ["(5) Go back to Datasets Viewer", "Datasets Viewer"],
-    },
-    "Datasets Selector - Time": {
-        "header_description": "",
-        "description": "Select an option:",
-        "1": ["(1) View specific year", ""],
-        "2": ["(2) View by quarter", ""],
-        "3": ["(3) View by year", ""],
-        "4": ["(4) Go back to Datasets Viewer", "Datasets Viewer"],
-        "5": ["", ""],
-    },
-    "Datasets Selector - Time Period": {
-        "header_description": "",
-        "description": "",
-        "1": ["(1) View specific year", ""],
-        "2": ["(2) View by quarter", ""],
-        "3": ["(3) View by year", ""],
-        "4": ["(4) Go back to Datasets Viewer", "Datasets Viewer"],
-        "5": ["", ""],
+    "Datasets Lookup": {
+        "additional_description": non,
+        "description": ["Please do one of the following:", non],
+        "1": ["Enter the year range in 'YYYY-YYYY' format", ""],
+        "2": ["     e.g '2000-2020'", ""],
+        "3": ["Note * Your second year cannot be smaller than your first", ""],
+        "4": [""],
+        "5": ["To go back to Datasets Viewer enter 5", "Datasets Viewer"],
     },
     "Visualisations Viewer": {
-        "header_description": "",
-        "description": "Select a visualisation:",
+        "additional_description": non,
+        "description": ["Select a visualisation:", non],
         "1": ["(1) Bar chart", ""],
         "2": ["(2) Line graph", ""],
         "3": ["(3) Scatter plot", ""],
@@ -74,8 +61,8 @@ menus = {
         "5": ["", ""],
     },
     "Data Editor": {
-        "header_description": "",
-        "description": "Select an option:",
+        "additional_description": non,
+        "description": ["Select an option:", non],
         "1": ["(1) Add date", ""],
         "2": ["(2) Edit data", ""],
         "3": ["(3) Scatter plot", ""],
@@ -93,29 +80,43 @@ def selector():
     global data_module_output
 
     user_input = ""
-    data_module_output = ""
 
-    if menus[menu]["5"][0] == "":
-        if valid:
-            user_input = input("Enter your selection (1-4): ")
+    if menus[menu]["description"][0] != "Please do one of the following:":
+        if menus[menu]["5"][0] == "":
+            ranger = 4
+            valid_range = ["1", "2", "3", "4"]
+        elif menus[menu]["4"][0] == "":
+            ranger = 3
+            valid_range = ["1", "2", "3"]
         else:
-            user_input = input("Invalid option! Enter your selection (1-4): ")
-        valid = False if user_input not in ["1", "2", "3", "4"] else True
+            ranger = 5
+            valid_range = ["1", "2", "4", "3", "5"]
 
+        if valid:
+            user_input = input(f"Enter your selection (1-{ranger}): ")
+        else:
+            user_input = input(f"Invalid option! Enter your selection (1-{ranger}): ")
+        valid = False if user_input not in valid_range else True
+
+        if valid:
+            if menus[menu][user_input][1] == "Quit":
+                quit = True
+            elif menus[menu][user_input][1] == "":
+                data_module_output = menus[menu][user_input][2](menus, menu)
+            else:
+                menu = menus[menu][user_input][1]
+                data_module_output = menus[menu]["description"][1]()
     else:
         if valid:
-            user_input = input("Enter your selection (1-5): ")
+            user_input = input(
+                "Enter your range (YYYY-YYYY) or 5 to go back to Datasets Viewer): "
+            )
         else:
-            user_input = input("Invalid option! Enter your selection (1-5): ")
-        valid = False if user_input not in ["1", "2", "3", "4", "5"] else True
-
-    if valid:
-        if menus[menu][user_input][1] == "Quit":
-            quit = True
-        elif menus[menu][user_input][1] == "":
-            data_module_output = menus[menu][user_input][2]()
-        else:
-            menu = menus[menu][user_input][1]
+            user_input = input(
+                "Invalid option! Enter your range (YYYY-YYYY) or 5 to go back to Datasets Viewer): "
+            )
+        for x in user_input:
+            "idk"
 
 
 input("""
@@ -159,21 +160,21 @@ while not quit:
     )
     print(f"""
 =============================================================================================================
-Oil Prices vs Inflation - {menu}      {menus[menu]["header_description"]}
+Oil Prices vs Inflation - {menu}       
 =============================================================================================================
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣶⣿⣿⣶⡆⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀    
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠶⠶⢾⣿⣿⣿⣿⣧⣄⣀⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀    
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣿⣿⡿⠛⠉⢙⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀    
-⠀⠀⠀⠀⣠⣴⣶⣶⣶⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣾⣿⣶⣾⣿⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀    {menu}  
-⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀    {menus[menu]["description"]} 
-⠀⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⣠⣴⣿⣿⡿⣿⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀        
-⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣦⣤⣴⣶⣿⣿⠿⠛⠁⠀⠘⣿⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀        {menus[menu]["1"][0]}
-⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣮⣭⣽⡶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀        {menus[menu]["2"][0]}
-⠀⠀⢸⣿⣿⣿⣿⣿⣿⠋⠀⠈⠉⠛⠛⠿⠿⣿⣿⣇⣿⣿⣿⢿⣿⣿⣿⣟⣛⣯⣤⣤⣀⣀⡀⠀⠀⠀⠀⠀        {menus[menu]["3"][0]}
-⠀⠀⠘⣿⣿⣿⣿⡿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⢻⣿⣿⡿⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣤⡀        {menus[menu]["4"][0]}
-⠀⠀⠀⠹⣿⣿⠟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣾⣿⣿⣇⡄⠀⠀⠀⠉⠉⠛⠻⣿⣿⣿⣿⣿⣿⣿⣿⡇        {menus[menu]["5"][0]}
-⠀⠀⠀⠀⢸⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇⣿⣿⣿⢻⣧⠀⠀⠀⠀⠀⠀⠀⣿⣿⠀⠈⠉⠉⠛⠉⠀    
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣿⣿⡿⠛⠉⢙⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀    {menu}
+⠀⠀⠀⠀⣠⣴⣶⣶⣶⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣾⣿⣶⣾⣿⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀    {menus[menu]["description"][0]} 
+⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀     
+⠀⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⣠⣴⣿⣿⡿⣿⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀        {menus[menu]["1"][0]}
+⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣦⣤⣴⣶⣿⣿⠿⠛⠁⠀⠘⣿⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀        {menus[menu]["2"][0]}
+⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣮⣭⣽⡶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀        {menus[menu]["3"][0]}
+⠀⠀⢸⣿⣿⣿⣿⣿⣿⠋⠀⠈⠉⠛⠛⠿⠿⣿⣿⣇⣿⣿⣿⢿⣿⣿⣿⣟⣛⣯⣤⣤⣀⣀⡀⠀⠀⠀⠀⠀        {menus[menu]["4"][0]}
+⠀⠀⠘⣿⣿⣿⣿⡿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⢻⣿⣿⡿⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣤⡀        {menus[menu]["5"][0]}
+⠀⠀⠀⠹⣿⣿⠟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣾⣿⣿⣇⡄⠀⠀⠀⠉⠉⠛⠻⣿⣿⣿⣿⣿⣿⣿⣿⡇        
+⠀⠀⠀⠀⢸⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇⣿⣿⣿⢻⣧⠀⠀⠀⠀⠀⠀⠀⣿⣿⠀⠈⠉⠉⠛⠉⠀    {menus[menu]["additional_description"]()}
 ⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣇⠙⠛⠋⢸⣿⡆⠀⠀⠀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⠀⠀    
 ⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⠉⢳⣤⡞⠉⢻⣷⠀⠀⠀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⠀⠀    To move through the UI write the corresponding
 ⠀⠀⠀⠀⢸⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣇⠴⠋⠀⠙⠲⣜⣿⡆⠀⠀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⠀⠀    number to your selected option into the input area.
