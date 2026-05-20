@@ -2,27 +2,49 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-all_data = pd.read_csv("fuel_vs_inflation_data.csv")
+all_data = pd.read_csv("fuel_vs_inflation_data.csv", index_col = "Date")
 
 current_data_state = {
     "by_time_period": "quarter",
     "time_period": ["1974-2026", 1974, 2026],
     "specific_time": [False, 1],
     "full_dataset": "summarised",
-    "visualisation": ["scatter", "scatter plot"]
+    "visualisation": ["scatter", "scatter plot"],
+    "quarters": ["-03-01", "-06-01", "-09-01", "-12-01"]
 }
 
 
 def display_data():
     global all_data
-    return all_data
+    display = []
+    if current_data_state["by_time_period"] == "quarter":
+        for x in range(current_data_state["time_period"][1], current_data_state["time_period"][2] + 1):
+            for quarter in current_data_state["quarters"]:
+                if str(x) + quarter in all_data.index:
+                    display.append(all_data.loc[[str(x) + quarter]])
+    else:
+        for x in range(current_data_state["time_period"][1], current_data_state["time_period"][2] + 1):
+            if str(x) + "-03-01" in all_data.index:
+                display.append(all_data.loc[[str(x) + "-03-01"]])
+    if current_data_state["full_dataset"] == "summarised":
+        return pd.concat(display)
+    else:
+        67
+def search(year, quarter):
+    year = str(year)
+    search = pd.DataFrame()
+    if quarter == 5:
+        search = []
+        for quarter in current_data_state["quarters"]:
+            if year + quarter in all_data.index:
+                search.append(all_data.loc[year + quarter])
+    else:
+        if year + current_data_state["quarters"][quarter - 1] in all_data.index:
+            search = all_data.loc(current_data_state["quarters"][quarter - 1])
+    pd.concat(search) if search is list else search
+    return search
 
-def search():
-    "god knows"
 
-
-def range():
-    67
 
 
 def time_viewer(menus, menu):
@@ -42,7 +64,7 @@ def viewing_description(menu):
         return f"Currently viewing {current_data_state['visualisation'][1]} from {current_data_state['time_period'][0]} by {current_data_state['by_time_period']}"
 
 def display_full_dataset(menus, menu):
-    if current_data_state["full_dataset"]:
+    if current_data_state["full_dataset"] == "summarised":
         current_data_state["full_dataset"] = "full"
         menus[menu]["4"][0] = "(4) View SUMMARISED dataset"
     else:
@@ -51,20 +73,33 @@ def display_full_dataset(menus, menu):
 
 
 def dataset_year_range(a, b):
-    current_data_state["time_period"][0] = f"{a}-{b}"
-    current_data_state["time_period"][1] = a
-    current_data_state["time_period"][2] = b
-    return a + b
+    if a < b:
+        current_data_state["time_period"][0] = f"{a}-{b}"
+        current_data_state["time_period"][1] = a
+        current_data_state["time_period"][2] = b
+    else:
+        current_data_state["time_period"][0] = f"{b}-{a}"
+        current_data_state["time_period"][1] = b
+        current_data_state["time_period"][2] = a
 
 def visualise():
-    all_data.plot(
-        kind = current_data_state["visualisation"][0],
-        x = "Fuel" if current_data_state["visualisation"][0] == "scatter" else "Date",
-        y = "Inflation" if current_data_state["visualisation"][0] == "scatter" else ["Fuel", "Inflation"],
-        color = "blue",
-        alpha = 0.3,
-        title = "Correlation of fuel prices and inflation",
-        )
+    if current_data_state["visualisation"][0] == "scatter":
+        all_data.plot(
+            kind = current_data_state["visualisation"][0],
+            x = "Fuel",
+            y = "Inflation",
+            color = "blue",
+            alpha = 0.3,
+            title = "Correlation of fuel prices and inflation",
+            )
+    else:
+        all_data.plot(
+            kind = current_data_state["visualisation"][0],
+            y = ["Fuel", "Inflation"],
+            color = "blue",
+            alpha = 0.3,
+            title = f"Fuel Prices and Inflation from {current_data_state['by_time_period'][0]}",
+            )
     plt.show()
 
 
