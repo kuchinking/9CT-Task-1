@@ -105,7 +105,7 @@ menus = {
     "Data Editor": {
         "additional_description": [viewing_description, "To do more advanced selection on viewing", "the dataset, go to Datasets Viewer."],
         "description": ["Select an option:", non],
-        "1": ["(1) Add quarter", "", add_quarter],
+        "1": ["(1) Add quarter", "", non],
         "2": ["(2) Remove year or quarter", "", ],
         "3": ["(3) Select a time range", "Datasets Range Selector"],
         "4": ["(4) Go back to Main Menu", "Main Menu"],
