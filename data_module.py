@@ -26,6 +26,7 @@ def display_data():
         for x in range(current_data_state["time_period"][1], current_data_state["time_period"][2] + 1):
             if str(x) + "-03-01" in all_data.index:
                 display.append(all_data.loc[[str(x) + "-03-01"]])
+
     if current_data_state["full_dataset"] == "summarised":
         return pd.concat(display)
     else:
@@ -37,7 +38,7 @@ def search(year, quarter):
         search = []
         for quarter in current_data_state["quarters"]:
             if year + quarter in all_data.index:
-                search.append(all_data.loc[year + quarter])
+                search.append(all_data.loc[[year + quarter]])
     else:
         if year + current_data_state["quarters"][quarter - 1] in all_data.index:
             search = all_data.loc(current_data_state["quarters"][quarter - 1])

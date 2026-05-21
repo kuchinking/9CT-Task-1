@@ -32,6 +32,7 @@ def non(yes=True):
 
 
 menus = {
+    "previous_menu": "menu",
     "Main Menu": {
         "additional_description": [non, "To move through the UI write the corresponding", "number to your selected option in the input area."],
         "description": ["Select an option:", non],
@@ -86,6 +87,15 @@ menus = {
         "4": ["(4) Go back to Main Menu", "Main Menu"],
         "5": ["", ""],
     },
+    "Visualisatiosn Range Selector": {
+        "additional_description": [viewing_description, "", ""],
+        "description": ["Please do one of the following:", display_data],
+        "1": ["Enter the first year of your range (YYYY)", ""],
+        "2": ["     e.g '2000'", ""],
+        "3": ["or 'all' to view the full dataset", ""],
+        "4": [""],
+        "5": ["To go back to Main Menu enter 5", "Main Menu"],
+    },
     "Datasets Selector": {
         "additional_description": [viewing_description, "", ""],
         "description": ["Select a visualisation:", visualise],
@@ -124,9 +134,7 @@ def selector():
     global data_module_output
     global input_1
     global input_2
-
     user_input = ""
-    n = 0
 
     if menus[menu]["description"][0] != "Please do one of the following:":
         if menus[menu]["5"][0] == "":
@@ -149,10 +157,11 @@ def selector():
                 menus[menu][user_input][2](menus, menu)
                 data_module_output = menus[menu]["description"][1]()
             else:
+                menus["previous_menu"] = menu
                 menu = menus[menu][user_input][1]
                 data_module_output = menus[menu]["description"][1]()
 
-    elif menu == "Datasets Range Selector":
+    elif menu == "Datasets Range Selector" or menu == "Visualisations Range Selector":
         first_second = "first" if input_1 == -99999 else "second"
 
         if valid:
@@ -160,7 +169,7 @@ def selector():
         else:
             user_input = input(f"Invalid option! Enter the {first_second} year of your range (YYYY-YYYY) or 5 to go back to Main Menu: ")
 
-        valid = (True if (user_input.isdigit() and len(user_input) == 4) or user_input == "5" else False)
+        valid = (True if (user_input.isdigit() and len(user_input) == 4 and 1973 < int(user_input) < 2027) or user_input == "5" else False)
 
         if valid and user_input != "5" and input_1 == -99999:
             input_1 = int(user_input)
@@ -168,10 +177,14 @@ def selector():
             menus[menu]["2"][0] = "     e.g '2020'"
         elif valid and user_input != "5":
             input_2 = int(user_input)
-            dataset_year_range(input_1, input_2)
+            if menu == "Visualisations Range Selector":
+                dataset_year_range(input_1, input_2, True)
+            else:
+                dataset_year_range(input_1, input_2)
             input_1 = -99999
             input_2 = -99999
         elif valid:
+            menus["previous_menu"] = menu
             menu = menus[menu][user_input][1]
             input_1 = -99999
         data_module_output = menus[menu]["description"][1]()
@@ -192,6 +205,7 @@ def selector():
                 menus[menu]["1"][0] = "Enter the quarter you wish to search for (e.g 1)"
                 menus[menu]["2"][0] = "     or 'full' to search the full year."
             elif valid:
+                menus["previous_menu"] = menu
                 menu = menus[menu][user_input][1]
 
         else:
