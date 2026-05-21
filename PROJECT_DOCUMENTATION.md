@@ -34,8 +34,8 @@ Whether oil prices cause inflation is more complicated. A major cost for consume
 For the oil prices I will use WTI oil shares
 
 For the inflation rate I will use two sources, from the Australian Beuro of Statistics: 
-1. https://www.abs.gov.au/statistics/research/70-years-inflation-australia - This source shows the annual inflation rate per quarter for 70 years.
-2. 
+1. https://www.abs.gov.au/statistics/research/70-years-inflation-australia - This source shows the annual inflation for the last 70 years.
+2. https://www.abs.gov.au/articles/history-automotive-fuel-prices - This rescource shows the automotive fuel prices since 1974.
 
 ## Data Dictionary:
 |Field |Datatype| Format for display |Description |Example |Validation|

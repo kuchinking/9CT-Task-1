@@ -3,7 +3,7 @@
 
 from data_module import (
     display_data,
-    time_viewer,
+    data_info,
     viewing_description,
     display_full_dataset,
     dataset_year_range,
@@ -11,16 +11,13 @@ from data_module import (
     bar_chart,
     line_graph,
     scatter_plot,
-    search
+    search,
+    averages
 )
-
-import matplotlib as mpl
-import pandas as pd
 
 quit = False
 menu = "Main Menu"
 valid = True
-one = 1
 data_module_output = ""
 input_1 = -99999
 input_2 = -99999
@@ -45,7 +42,7 @@ menus = {
     "Datasets Viewer": {
         "additional_description": [viewing_description, "", ""],
         "description": ["Select an option:", display_data],
-        "1": ["(1) View by year", "", time_viewer],
+        "1": ["(1) View info on data", "", data_info],
         "2": ["(2) View a time period", "Datasets Range Selector"],
         "3": ["(3) Search for a specific quarter or year", "Datasets Search"],
         "4": ["(4) View FULL dataset", "", display_full_dataset],
@@ -73,8 +70,8 @@ menus = {
         "additional_description": [viewing_description, "", ""],
         "description": ["Select a visualisation:", visualise],
         "1": ["(1) Visualisations Selector", "Visualisations Selector"],
-        "2": ["(2) View by year", "", time_viewer],
-        "3": ["(3) View a time period", "Datasets Year Range"],
+        "2": ["(2) View by year", "", non],
+        "3": ["(3) View a time period", "Visualisations Range Selector"],
         "4": ["(4) Select datasets to compare", "Datasets Selector"],
         "5": ["(5) Go back to Main Menu", "Main Menu"],
     },
@@ -87,14 +84,14 @@ menus = {
         "4": ["(4) Go back to Main Menu", "Main Menu"],
         "5": ["", ""],
     },
-    "Visualisatiosn Range Selector": {
+    "Visualisations Range Selector": {
         "additional_description": [viewing_description, "", ""],
-        "description": ["Please do one of the following:", display_data],
+        "description": ["Please do one of the following:", visualise],
         "1": ["Enter the first year of your range (YYYY)", ""],
         "2": ["     e.g '2000'", ""],
         "3": ["or 'all' to view the full dataset", ""],
         "4": [""],
-        "5": ["To go back to Main Menu enter 5", "Main Menu"],
+        "5": ["To go back to Visualisations Viewer enter 5", "Visualisations Viewer"],
     },
     "Datasets Selector": {
         "additional_description": [viewing_description, "", ""],
@@ -108,20 +105,20 @@ menus = {
     "Data Editor": {
         "additional_description": [viewing_description, "To do more advanced selection on viewing", "the dataset, go to Datasets Viewer."],
         "description": ["Select an option:", non],
-        "1": ["(1) Add quarter or year", ""],
-        "2": ["(2) Remove year or quarter", ""],
+        "1": ["(1) Add quarter", "", add_quarter],
+        "2": ["(2) Remove year or quarter", "", ],
         "3": ["(3) Select a time range", "Datasets Range Selector"],
         "4": ["(4) Go back to Main Menu", "Main Menu"],
         "5": ["", ""],
     },
     "Data Calculator": {
         "additional_description": [non, "", ""],
-        "description": ["Select an option:", non],
-        "1": ["(1) Calculate averages", ""],
-        "2": ["(2) Calculate medians", ""],
-        "3": ["(3) Calculate modes", ""],
-        "4": ["(4) View all calculations", ""],
-        "5": ["(5) Go back to Main Menu", "Main Menu"],
+        "description": ["Select an option:", averages],
+        "1": ["(1) Calculate averages, mean and mode for a specific time period", ""],
+        "2": ["(2) Calculate percentage change between two years", ""],
+        "3": ["(3) Find the lowest/highest changes", ""],
+        "4": ["(4) Go back to Main Menu", "Main Menu"],
+        "5": ["", ""],
     },
 }
 
@@ -136,7 +133,7 @@ def selector():
     global input_2
     user_input = ""
 
-    if menus[menu]["description"][0] != "Please do one of the following:":
+    if menus[menu]["description"][0] != "Please do one of the following:" and input_1 == -99999:
         if menus[menu]["5"][0] == "":
             ranger = 4
             valid_range = ["1", "2", "3", "4"]
@@ -153,6 +150,8 @@ def selector():
         if valid:
             if menus[menu][user_input][1] == "Quit":
                 quit = True
+            elif menu == "Data Editor":
+                input_1 = user_input
             elif menus[menu][user_input][1] == "":
                 menus[menu][user_input][2](menus, menu)
                 data_module_output = menus[menu]["description"][1]()
@@ -177,18 +176,14 @@ def selector():
             menus[menu]["2"][0] = "     e.g '2020'"
         elif valid and user_input != "5":
             input_2 = int(user_input)
-            if menu == "Visualisations Range Selector":
-                dataset_year_range(input_1, input_2, True)
-            else:
-                dataset_year_range(input_1, input_2)
+            dataset_year_range(input_1, input_2, True) if menu == "Visualisations Range Selector" else dataset_year_range(input_1, input_2, False)
             input_1 = -99999
-            input_2 = -99999
         elif valid:
             menus["previous_menu"] = menu
             menu = menus[menu][user_input][1]
             input_1 = -99999
-        data_module_output = menus[menu]["description"][1]()
-
+        data_module_output = menus[menu]["description"][1]() if input_2 != -99999 or menu == "Datasets Range Selector" else ""
+        input_2 = -99999
     elif menu == "Datasets Search":
         first_second = "year you wish to search for (e.g 2020)" if input_1 == -99999 else "quarter you want to search for or 'full' to search for the whole year"
 
@@ -219,6 +214,16 @@ def selector():
                 menu = menus[menu][user_input][1]
             if valid:
                 input_1 = -99999
+    elif menu == "Data Editor":
+        input_2 = []
+        if input_1 == "1":
+            if valid:
+                user_input = "Enter the year you wish to add an entry for (e.g 2026): "
+            else:
+                user_input = "Invalid option! Enter the year you wish to add an entry for (e.g 2026): "
+            valid = True if len(user_input) == 4 and user_input.isdigit() else False
+            input_2 = user_input
+
 input("""
 =============================================================================================================
 Oil Prices vs Inflation - Introduction
@@ -289,5 +294,38 @@ Oil Prices vs Inflation - {menu}
 =============================================================================================================""")
     print(data_module_output)
     selector()
+print(
+        """
+"""
+        * 2000
+        + """
+=============================================================================================================
+Quit Successfully! - Thanks for using the program, from Michael K
+=============================================================================================================
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣶⣿⣿⣶⡆⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀    
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠶⠶⢾⣿⣿⣿⣿⣧⣄⣀⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀    
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣿⣿⡿⠛⠉⢙⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ 
+⠀⠀⠀⠀⣠⣴⣶⣶⣶⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣾⣿⣶⣾⣿⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀    
+⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀     
+⠀⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⣠⣴⣿⣿⡿⣿⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀      
+⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣦⣤⣴⣶⣿⣿⠿⠛⠁⠀⠘⣿⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀ 
+⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣮⣭⣽⡶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀      
+⠀⠀⢸⣿⣿⣿⣿⣿⣿⠋⠀⠈⠉⠛⠛⠿⠿⣿⣿⣇⣿⣿⣿⢿⣿⣿⣿⣟⣛⣯⣤⣤⣀⣀⡀⠀⠀⠀⠀⠀    
+⠀⠀⠘⣿⣿⣿⣿⡿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⢻⣿⣿⡿⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣤⡀   
+⠀⠀⠀⠹⣿⣿⠟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣾⣿⣿⣇⡄⠀⠀⠀⠉⠉⠛⠻⣿⣿⣿⣿⣿⣿⣿⣿⡇        
+⠀⠀⠀⠀⢸⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇⣿⣿⣿⢻⣧⠀⠀⠀⠀⠀⠀⠀⣿⣿⠀⠈⠉⠉⠛⠉⠀ 
+⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣇⠙⠛⠋⢸⣿⡆⠀⠀⠀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⠀⠀    
+⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⠉⢳⣤⡞⠉⢻⣷⠀⠀⠀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⠀⠀  
+⠀⠀⠀⠀⢸⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣇⠴⠋⠀⠙⠲⣜⣿⡆⠀⠀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⠀⠀ 
+⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⣷⡒⠒⠒⠒⠒⣺⢿⣿⠀⠀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⠀⠀    
+⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⡇⠀⠉⣳⣤⣖⠋⠁⠘⣿⡇⠀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⠀⠀    
+⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⣠⠴⠊⠁⠀⠈⠙⠲⢤⣻⣿⡀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⢠⣿⠿⠿⣍⣉⠉⠉⠉⢉⣩⡿⠟⣿⣇⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⠀⠀    
+⠀⠀⠀⠀⢸⣧⠀⠀⠀⠀⠀⠀⠀⣼⡿⠀⠀⠀⣉⣿⠶⢾⣍⡀⠀⠀⢹⣿⡀⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀
+⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⢰⣿⣧⡤⠖⠛⠉⠀⠀⠀⠈⠙⠳⢦⣬⣿⣷⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
+⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠃
+"""
+    )
 
-print("Quit successfully!")

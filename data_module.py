@@ -5,8 +5,9 @@ import pandas as pd
 all_data = pd.read_csv("fuel_vs_inflation_data.csv", index_col = "Date")
 
 current_data_state = {
-    "by_time_period": "quarter",
-    "time_period": ["1974-2026", 1974, 2026],
+
+    "data_time_period": ["1974-2026", 1974, 2026],
+    "visualise_time_period": ["1974-2026", 1974, 2026],
     "specific_time": [False, 1],
     "full_dataset": "summarised",
     "visualisation": ["scatter", "scatter plot"],
@@ -17,20 +18,16 @@ current_data_state = {
 def display_data():
     global all_data
     display = []
-    if current_data_state["by_time_period"] == "quarter":
-        for x in range(current_data_state["time_period"][1], current_data_state["time_period"][2] + 1):
-            for quarter in current_data_state["quarters"]:
-                if str(x) + quarter in all_data.index:
-                    display.append(all_data.loc[[str(x) + quarter]])
-    else:
-        for x in range(current_data_state["time_period"][1], current_data_state["time_period"][2] + 1):
-            if str(x) + "-03-01" in all_data.index:
-                display.append(all_data.loc[[str(x) + "-03-01"]])
+    for x in range(current_data_state["data_time_period"][1], current_data_state["data_time_period"][2] + 1):
+        for quarter in current_data_state["quarters"]:
+            if str(x) + quarter in all_data.index:
+                display.append(all_data.loc[[str(x) + quarter]])
 
-    if current_data_state["full_dataset"] == "summarised":
+
+    if current_data_state["full_dataset"] == "summarised" and display != []:
         return pd.concat(display)
     else:
-        67
+        return pd.concat(display).to_string()
 def search(year, quarter):
     year = str(year)
     search = pd.DataFrame()
@@ -41,28 +38,21 @@ def search(year, quarter):
                 search.append(all_data.loc[[year + quarter]])
     else:
         if year + current_data_state["quarters"][quarter - 1] in all_data.index:
-            search = all_data.loc(current_data_state["quarters"][quarter - 1])
+            search = all_data.loc[year + current_data_state["quarters"][int(quarter) - 1]]
     pd.concat(search) if search is list else search
     return search
 
+def data_info():
+    67
 
 
-
-def time_viewer(menus, menu):
-
-    if current_data_state["by_time_period"] == "quarter":
-        current_data_state["by_time_period"] = "year"
-        menus[menu]["1"][0] = "(1) View by quarter"
-    else:
-        current_data_state["by_time_period"] = "quarter"
-        menus[menu]["1"][0] = "(1) View by year"
 
 
 def viewing_description(menu):
     if menu != "Visualisations Viewer" and menu != "Data Editor":
-        return f"Currently viewing {current_data_state['time_period'][0]} by {current_data_state['by_time_period']}"
+        return f"Currently viewing {current_data_state['data_time_period'][0]}."
     elif menu == "Visualisations Viewer":
-        return f"Currently viewing {current_data_state['visualisation'][1]} from {current_data_state['time_period'][0]} by {current_data_state['by_time_period']}"
+        return f"Currently viewing {current_data_state['visualisation'][1]} from {current_data_state['data_time_period'][0]}."     #edit this
 
 def display_full_dataset(menus, menu):
     if current_data_state["full_dataset"] == "summarised":
@@ -73,19 +63,27 @@ def display_full_dataset(menus, menu):
         menus[menu]["4"][0] = "(4) View FULL dataset"
 
 
-def dataset_year_range(a, b):
+def dataset_year_range(a, b, visualise):
+    data_or_visualise = "visualise_time_period" if visualise else "data_time_period"
     if a < b:
-        current_data_state["time_period"][0] = f"{a}-{b}"
-        current_data_state["time_period"][1] = a
-        current_data_state["time_period"][2] = b
+        current_data_state[data_or_visualise][0] = f"{a}-{b}"
+        current_data_state[data_or_visualise][1] = a
+        current_data_state[data_or_visualise][2] = b
     else:
-        current_data_state["time_period"][0] = f"{b}-{a}"
-        current_data_state["time_period"][1] = b
-        current_data_state["time_period"][2] = a
+        current_data_state[data_or_visualise][0] = f"{b}-{a}"
+        current_data_state[data_or_visualise][1] = b
+        current_data_state[data_or_visualise][2] = a
 
 def visualise():
+    visualise_data = []
+    for x in range(current_data_state["visualise_time_period"][1], current_data_state["visualise_time_period"][2] + 1):
+            for quarter in current_data_state["quarters"]:
+                if str(x) + quarter in all_data.index:
+                    visualise_data.append(all_data.loc[[str(x) + quarter]])
+    visualise_data = pd.concat(visualise_data)
+
     if current_data_state["visualisation"][0] == "scatter":
-        all_data.plot(
+        visualise_data.plot(
             kind = current_data_state["visualisation"][0],
             x = "Fuel",
             y = "Inflation",
@@ -94,12 +92,12 @@ def visualise():
             title = "Correlation of fuel prices and inflation",
             )
     else:
-        all_data.plot(
+        visualise_data.plot(
             kind = current_data_state["visualisation"][0],
             y = ["Fuel", "Inflation"],
             color = "blue",
             alpha = 0.3,
-            title = f"Fuel Prices and Inflation from {current_data_state['by_time_period'][0]}",
+            title = f"Fuel Prices and Inflation from {current_data_state['visualise_time_period'][0]}",
             )
     plt.show()
 
@@ -113,3 +111,16 @@ def line_graph(menus, menu):
 def scatter_plot(menus, menu):
     current_data_state["visualisation"][0] = "scatter"
     current_data_state["visualisation"][1] = "scatter plot"
+
+def averages():
+    averages = all_data.mean()
+    medians = all_data.median()
+    modes = all_data.mode()
+    return f"""Averages: 
+{averages}
+
+Medians: 
+{medians}
+
+Modes (there may/will be multiple): 
+{modes}"""
